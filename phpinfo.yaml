@@ -1,0 +1,34 @@
+id: phpinfo-exposure-strict
+
+info:
+  name: Exposed phpinfo() Page (Strict)
+  author: NK
+  severity: medium
+  description: Detects publicly exposed PHP info pages leaking environment, version, and server internals.
+  tags: php,phpinfo,infodisclosure
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/phpinfo.php"
+      - "{{BaseURL}}/info.php"
+      - "{{BaseURL}}/test.php"
+      - "{{BaseURL}}/php.php"
+      - "{{BaseURL}}/prod/php.php"
+      - "{{BaseURL}}/prod/phpinfo.php"
+      - "{{BaseURL}}/prod/test.php"
+      - "{{BaseURL}}/prod/info.php"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        words:
+          - "<title>phpinfo()</title>"
+          - "PHP Version"
+          - "Configuration"
+        condition: and

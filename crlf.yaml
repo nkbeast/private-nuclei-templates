@@ -1,0 +1,23 @@
+id: crlf-injection
+
+info:
+  name: CRLF Injection Detection
+  author: NK
+  severity: high
+  description: |
+    Detects CRLF injection by injecting newline characters to see if the server reflects them into HTTP headers.
+  reference:
+    - https://portswigger.net/web-security/response-splitting
+    - https://owasp.org/www-community/attacks/HTTP_Response_Splitting
+  tags: crlf,headers,injection,http,response-splitting
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/?q=test%0d%0aX-Custom-Header:injected"
+
+    matchers:
+      - type: word
+        part: header
+        words:
+          - "X-Custom-Header: injected"

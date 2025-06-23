@@ -1,0 +1,26 @@
+id: dsstore-exposure-strict
+
+info:
+  name: Exposed .DS_Store File
+  author: NK
+  severity: medium
+  description: Detects exposed .DS_Store files that leak directory structure.
+  tags: dsstore,macos,infodisclosure
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/.DS_Store"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        words:
+          - "Bud1"
+          - "ATTR"
+        condition: or

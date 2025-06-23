@@ -1,0 +1,37 @@
+id: register-page-detect
+
+info:
+  name: Registration Page Detection (Accurate)
+  author: NK
+  severity: info
+  description: Detects registration or signup pages on web applications with stricter matchers.
+  tags: web,register,signup,recon,exposure
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/register"
+      - "{{BaseURL}}/signup"
+      - "{{BaseURL}}/user/register"
+      - "{{BaseURL}}/users/register"
+      - "{{BaseURL}}/account/register"
+      - "{{BaseURL}}/account/signup"
+      - "{{BaseURL}}/auth/register"
+      - "{{BaseURL}}/auth/signup"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "<form"
+          - "Register"
+          - "input"
+          - "email"
+          - "password"
+        condition: and
+
+      - type: status
+        status:
+          - 200
+

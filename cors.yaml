@@ -1,0 +1,39 @@
+id: insecure-cors-misconfig
+
+info:
+  name: Insecure CORS Configuration
+  author: NK
+  severity: high
+  description: |
+    Detects insecure CORS configurations such as wildcard origins or origin reflection combined with credentials, which can lead to cross-origin access and data theft.
+  reference:
+    - https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    - https://portswigger.net/research/exploiting-cors-misconfigurations-for-bitcoins-and-bounties
+  tags: cors,misconfig,web,security
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    headers:
+      Origin: https://evil.com
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: header
+        words:
+          - "Access-Control-Allow-Origin: *"
+
+      - type: word
+        part: header
+        words:
+          - "Access-Control-Allow-Origin: https://evil.com"
+        condition: and
+
+      - type: word
+        part: header
+        words:
+          - "Access-Control-Allow-Credentials: true"
+        condition: and

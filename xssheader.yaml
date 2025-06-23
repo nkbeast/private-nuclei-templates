@@ -1,0 +1,42 @@
+id: host-header-xss
+
+info:
+  name: Host Header Injection with XSS
+  author: NK
+  severity: high
+  description: |
+    Attempts to inject an XSS payload via the Host and related headers to detect Host Header Injection vulnerabilities that lead to reflected or stored XSS.
+  reference:
+    - https://portswigger.net/web-security/host-header
+    - https://hackerone.com/reports/341876
+  tags: xss,host-header,injection,web
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    headers:
+      Host: 'evil.com"><script>alert(1)</script>'
+      X-Host: 'evil.com"><script>alert(1)</script>'
+      X-Forwarded-Host: 'evil.com"><script>alert(1)</script>'
+      X-Forwarded-Server: 'evil.com"><script>alert(1)</script>'
+      X-Original-Host: 'evil.com"><script>alert(1)</script>'
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '"><script>alert(1)</script>'
+
+      - type: word
+        part: header
+        words:
+          - '"><script>alert(1)</script>'
+
+      - type: regex
+        part: body
+        regex:
+          - '<script>alert\(1\)</script>'
+

@@ -1,0 +1,28 @@
+id: host-header-injection-extended
+
+info:
+  name: Host Header Injection - Common Header Variants
+  author: NK
+  severity: medium
+  description: Detects host header injection vulnerabilities via various headers used by frameworks and reverse proxies.
+  reference:
+    - https://portswigger.net/web-security/host-header
+    - https://owasp.org/www-community/attacks/Host_header_injection
+  tags: host-header,injection,x-forwarded,proxy,web
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    headers:
+      Host: "evil.com"
+      X-Forwarded-Host: "evil.com"
+      X-Host: "evil.com"
+      X-Forwarded-Server: "evil.com"
+
+    matchers:
+      - type: word
+        part: header
+        words:
+          - "evil.com"
