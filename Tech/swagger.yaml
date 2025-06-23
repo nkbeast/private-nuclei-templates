@@ -1,0 +1,38 @@
+id: swagger-ui-detect-precise
+
+info:
+  name: Swagger UI Interface Detection (Strict)
+  author: NK
+  severity: info
+  description: |
+    Detects real Swagger UI interfaces with high confidence by finding key assets and HTML markers.
+  reference:
+    - https://github.com/swagger-api/swagger-ui
+    - https://blog.vidocsecurity.com/blog/hacking-swagger-ui-from-xss-to-account-takeovers
+  tags: swagger,api,openapi,recon
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/swagger-ui.html"
+      - "{{BaseURL}}/swagger-ui/"
+      - "{{BaseURL}}/api-docs"
+      - "{{BaseURL}}/v2/api-docs"
+      - "{{BaseURL}}/v3/api-docs"
+      - "{{BaseURL}}/swagger-resources/configuration/ui"
+      - "{{BaseURL}}/swagger-initializer.js"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "swagger-initializer.js"
+          - "SwaggerUIBundle"
+      - type: regex
+        part: body
+        regex:
+          - "<title>Swagger UI</title>"
+      - type: status
+        status:
+          - 200
