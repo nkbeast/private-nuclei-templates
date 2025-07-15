@@ -1,7 +1,7 @@
 id: apache-server-status-check
 
 info:
-  name: Apache Server Status Check
+  name: Apache Server Status
   author: SirBugs
   severity: medium
 
