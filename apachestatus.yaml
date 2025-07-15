@@ -1,42 +1,18 @@
-id: exposed-apache-status
+id: apache-server-status-check
 
 info:
-  name: Exposed Apache Server Status
-  author: your-name
+  name: Apache Server Status Check
+  author: SirBugs
   severity: medium
-  description: |
-    Detects publicly accessible Apache mod_status endpoints which may expose internal information such as requests, IPs, server uptime, and modules.
-  reference:
-    - https://httpd.apache.org/docs/current/mod/mod_status.html
-    - https://book.hacktricks.xyz/pentesting-web/apache#mod_status
-  tags: apache,status,exposure,misconfig
 
 requests:
   - method: GET
     path:
       - "{{BaseURL}}/server-status"
-      - "{{BaseURL}}/server-status?auto"
-
-    matchers-condition: or
+      - "{{BaseURL}}/server-info"
+    matchers-condition: and
     matchers:
       - type: word
-        part: body
         words:
-          - "Apache Server Status"
-          - "Current Time"
-          - "Server uptime"
-          - "Server Version"
-
-      - type: word
+          - "Apache Server Status for"
         part: body
-        words:
-          - "Scoreboard"
-          - "Total accesses"
-          - "BusyWorkers"
-          - "IdleWorkers"
-        condition: and
-
-      - type: regex
-        part: body
-        regex:
-          - "Server Version:\\s+Apache/?[\\d\\.]+"
